@@ -1,0 +1,200 @@
+{
+    "_version": "1.59.0",
+    "sap.app": {
+        "id": "pdfdisplay",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.14.2",
+            "toolsId": "e0066842-ea0d-4d7e-aed5-fb3bd0c72e8d"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "odata/v4/my/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "odataVersion": "4.0"
+                }
+            }
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "pdfdisplay-display": {
+                    "semanticObject": "pdfdisplay",
+                    "action": "display",
+                    "title": "{{flpTitle}}",
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    }
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.126.2",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ushell": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "pdfdisplay.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        },
+        "resources": {
+            "css": []
+        },
+        "routing": {
+            "config": {},
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "studList",
+                    "target": "studList"
+                },
+                {
+                    "pattern": "stud({key}):?query:",
+                    "name": "studObjectPage",
+                    "target": "studObjectPage"
+                }
+            ],
+            "targets": {
+                "studList": {
+                    "type": "Component",
+                    "id": "studList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "contextPath": "/stud",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "stud": {
+                                    "detail": {
+                                        "route": "studObjectPage"
+                                    }
+                                }
+                            },
+                            "controlConfiguration": {
+                                "@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "tableSettings": {
+                                        "type": "ResponsiveTable"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "studObjectPage": {
+                    "type": "Component",
+                    "id": "studObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "editableHeaderContent": false,
+                            "contextPath": "/stud",
+                            "content": {
+                                "body": {
+                                    "sections": {
+                                        "GeneratedFacet1": {
+                                            "sideContent": {
+                                                "template": "pdfdisplay.ext.fragment.PDF",
+                                                "position": {
+                                                    "placement": "After",
+                                                    "anchor": "GeneratedFacet1"
+                                                },
+                                                "title": "pdf",
+                                                "type": "XMLFragment"
+                                            }
+                                        },
+                                        "PDF": {
+                                            "template": "pdfdisplay.ext.fragment.PDF",
+                                            "position": {
+                                                "placement": "After",
+                                                "anchor": "GeneratedFacet1"
+                                            },
+                                            "title": "Student"
+                                        }
+                                    }
+                                },
+                                "header": {
+                                    "actions": {
+                                        "1": {
+                                            "press": "pdfdisplay.ext.controller.PDF.PDFDisplay",
+                                            "visible": true,
+                                            "enabled": true,
+                                            "text": "PDF"
+                                        }
+                                    }
+                                },
+                                "footer": {
+                                    "actions": {
+                                        "2": {
+                                            "press": "pdfdisplay.ext.controller.Display.display",
+                                            "visible": true,
+                                            "enabled": true,
+                                            "text": "Display"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "Component.js": 1722918219604,
+  "ext/fragment/PDF.js": 1722921580351,
+  "ext/controller/PDF.js": 1722920767837,
+  "ext/controller/Display.js": 1723023428950,
+  "manifest.json": 1725010663737,
+  "i18n/i18n.properties": 1724822889503,
+  "Component-dbg.js": 1722918219604,
+  "Component.js.map": 1725010663823,
+  "ext/controller/PDF-dbg.js": 1722920767837,
+  "ext/controller/PDF.js.map": 1725010663834,
+  "ext/controller/Display-dbg.js": 1723023428950,
+  "ext/controller/Display.js.map": 1725010663834,
+  "ext/fragment/PDF-dbg.js": 1722921580351,
+  "ext/fragment/PDF.js.map": 1725010663835,
+  "Component-preload.js": 1725010663905,
+  "Component-preload.js.map": 1725010663905,
+  "ext/fragment/PDF.fragment.xml": 1722923089057,
+  "index.html": 1722918219604
+}

@@ -1,0 +1,48 @@
+{
+  "name": "PDFDisplay",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^7.9.4",
+    "@sap/cds-hana": "^2",
+    "@sap/xsenv": "^5.2.0",
+    "@sap/xssec": "^4.2.1",
+    "axios": "^1.7.5",
+    "braces": "^3.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "follow-redirects": "^1.15.6",
+    "ip": "^2.0.1",
+    "micromatch": "^4.0.8",
+    "passport": "^0.7.0",
+    "tar": "^7.4.3",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^8.1.2",
+    "@sap/eslint-plugin-cds": "^3",
+    "@sap/ux-specification": "^1.120.15",
+    "eslint": "^9",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-pdfdisplay": "cds watch --open pdfdisplay/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy PDFDisplay --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "cds": {
+    "requires": {
+      "db": "hana",
+      "auth": "dummy"
+    }
+  },
+  "sapux": [
+    "app/pdfdisplay"
+  ]
+}

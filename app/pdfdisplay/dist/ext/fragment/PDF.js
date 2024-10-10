@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/mvc/Controller","sap/m/MessageToast","sap/ui/core/Fragment","sap/m/PDFViewer","sap/ui/layout/DynamicSideContent"],function(e,a,s,i,t){"use strict";return{}});
+//# sourceMappingURL=PDF.js.map

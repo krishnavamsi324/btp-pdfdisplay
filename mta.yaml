@@ -1,0 +1,151 @@
+_schema-version: "3.1"
+ID: PDFDisplay
+description: A simple CAP project.
+version: 1.0.0
+modules:
+- name: PDFDisplay-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: PDFDisplay-db
+  - name: uaa_PDFDisplay
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    readiness-health-check-http-endpoint: /health
+    readiness-health-check-type: http
+  build-parameters:
+    builder: npm
+- name: PDFDisplay-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: PDFDisplay-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: PDFDisplay-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: PDFDisplay-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - pdfdisplay.zip
+      name: pdfdisplay
+      target-path: resources/
+    - artifacts:
+      - pdfdisplayworkflowuimodule.zip
+      name: pdfdisplayworkflowuimodule
+      target-path: resources/
+- name: pdfdisplay
+  type: html5
+  path: app/pdfdisplay
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: PDFDisplay-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: PDFDisplay-destination-service
+    parameters:
+      content-target: true
+  - name: PDFDisplay-repo-host
+    parameters:
+      service-key:
+        name: PDFDisplay-repo-host-key
+  - name: uaa_PDFDisplay
+    parameters:
+      service-key:
+        name: uaa_PDFDisplay-key
+  parameters:
+    content:
+      subaccount:
+        destinations:
+        - Name: pdfdisplay_PDFDisplay_repo_host
+          ServiceInstanceName: PDFDisplay-html5-srv
+          ServiceKeyName: PDFDisplay-repo-host-key
+          sap.cloud.service: pdfdisplay
+        - Authentication: OAuth2UserTokenExchange
+          Name: pdfdisplay_uaa_PDFDisplay
+          ServiceInstanceName: PDFDisplay-xsuaa-service
+          ServiceKeyName: uaa_PDFDisplay-key
+          sap.cloud.service: pdfdisplay
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: pdfdisplayworkflowuimodule
+  type: html5
+  path: workflow-ui-module
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: PDFDisplay-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: PDFDisplay-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: PDFDisplay-html5-srv
+    service-plan: app-host
+- name: PDFDisplay-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        subaccount:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: PDFDisplay-srv-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: PDFDisplay-destination-service
+    service-plan: lite
+  requires:
+  - name: srv-api
+- name: uaa_PDFDisplay
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: PDFDisplay-xsuaa-service
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production
